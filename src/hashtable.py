@@ -114,8 +114,23 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        # get the position in the array
+        position = self._hash_mod(key)
+        hashed_key = self._hash(key)
 
+        # get the node at the current position
+        current_node = self.storage[position]
+
+        # Tranverse the linked list
+        while current_node:
+            # compare the key of the node in the linked list with the hashed key
+            if self._hash(current_node.key) == hashed_key:
+                # return the value of the current node
+                return current_node.value
+            # move on to the next node
+            current_node = current_node.next
+
+        return None
 
     def resize(self):
         '''
