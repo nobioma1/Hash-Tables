@@ -139,8 +139,23 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        # copy the existing storage with out the None value
+        storage_items = [item for item in self.storage if item]
+        # double the existing capacity
+        self.capacity = self.capacity * 2
+        # create new array
+        self.storage = [None] * self.capacity
 
+        # go through all the items in the copied list
+        for item in storage_items:
+            # set the current node to the current item
+            current_node = item
+            # if current node is not None
+            while current_node:
+                # Insert into the New storage
+                self.insert(current_node.key, current_node.value)
+                # move to the next node
+                current_node = current_node.next
 
 
 if __name__ == "__main__":
