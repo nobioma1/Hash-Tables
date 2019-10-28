@@ -1,21 +1,24 @@
 # '''
 # Linked List hash table key/value pair
 # '''
+
+
 class LinkedPair:
     def __init__(self, key, value):
         self.key = key
         self.value = value
         self.next = None
 
+
 class HashTable:
     '''
     A hash table that with `capacity` buckets
     that accepts string keys
     '''
+
     def __init__(self, capacity):
         self.capacity = capacity  # Number of buckets in the hash table
         self.storage = [None] * capacity
-
 
     def _hash(self, key):
         '''
@@ -25,7 +28,6 @@ class HashTable:
         '''
         return hash(key)
 
-
     def _hash_djb2(self, key):
         '''
         Hash an arbitrary key using DJB2 hash
@@ -34,14 +36,12 @@ class HashTable:
         '''
         pass
 
-
     def _hash_mod(self, key):
         '''
         Take an arbitrary key and return a valid integer index
         within the storage capacity of the hash table.
         '''
         return self._hash(key) % self.capacity
-
 
     def insert(self, key, value):
         '''
@@ -51,9 +51,31 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
 
+        # use the hash_mod to get the position in the array
+        position = self._hash_mod(key)
+        # make a node with the new value
+        new_node = LinkedPair(key, value)
+        # get the item at position
+        current_node = self.storage[position]
 
+        # if the current position is empty insert
+        if not current_node:
+            self.storage[position] = new_node
+        else:
+            # transverse the linked list
+            while current_node:
+                # check if keys match and update it's value if they match
+                if self._hash(key) == self._hash(current_node.key):
+                    current_node.value = value
+                    return
+                # check if the next in the list is empty
+                if not current_node.next:
+                    # if empty insert the new node there
+                    current_node.next = new_node
+                    return
+                # else move current node to the next node
+                current_node = current_node.next
 
     def remove(self, key):
         '''
