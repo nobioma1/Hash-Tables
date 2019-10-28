@@ -85,8 +85,26 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        # get postion for the item
+        position = self._hash_mod(key)
 
+        # current item at position
+        current_item = self.storage[position]
+
+        # tranverse the linked list
+        while current_item:
+            # compare the keys
+            if self._hash(key) == self._hash(current_item.key):
+                # get the next item
+                next_item = current_item.next
+                # set the next item to the current position
+                self.storage[position] = next_item
+                return key
+            # move to the next item
+            current_item = current_item.next
+
+        print('Warning: Key Not Found')
+        return None
 
     def retrieve(self, key):
         '''
