@@ -1,21 +1,24 @@
 # '''
 # Linked List hash table key/value pair
 # '''
+
+
 class LinkedPair:
     def __init__(self, key, value):
         self.key = key
         self.value = value
         self.next = None
 
+
 class HashTable:
     '''
     A hash table that with `capacity` buckets
     that accepts string keys
     '''
+
     def __init__(self, capacity):
         self.capacity = capacity  # Number of buckets in the hash table
         self.storage = [None] * capacity
-
 
     def _hash(self, key):
         '''
@@ -23,8 +26,7 @@ class HashTable:
 
         You may replace the Python hash with DJB2 as a stretch goal.
         '''
-        return hash(key)
-
+        return self._hash_djb2(key)
 
     def _hash_djb2(self, key):
         '''
@@ -32,8 +34,11 @@ class HashTable:
 
         OPTIONAL STRETCH: Research and implement DJB2
         '''
-        pass
+        hash = 5381
+        for s in key:
+            hash = ((hash << 5) + hash) + ord(s)
 
+        return hash
 
     def _hash_mod(self, key):
         '''
@@ -41,7 +46,6 @@ class HashTable:
         within the storage capacity of the hash table.
         '''
         return self._hash(key) % self.capacity
-
 
     def insert(self, key, value):
         '''
@@ -51,9 +55,31 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
 
+        # use the hash_mod to get the position in the array
+        position = self._hash_mod(key)
+        # make a node with the new value
+        new_node = LinkedPair(key, value)
+        # get the item at position
+        current_node = self.storage[position]
 
+        # if the current position is empty insert
+        if not current_node:
+            self.storage[position] = new_node
+        else:
+            # transverse the linked list
+            while current_node:
+                # check if keys match and update it's value if they match
+                if self._hash(key) == self._hash(current_node.key):
+                    current_node.value = value
+                    return
+                # check if the next in the list is empty
+                if not current_node.next:
+                    # if empty insert the new node there
+                    current_node.next = new_node
+                    return
+                # else move current node to the next node
+                current_node = current_node.next
 
     def remove(self, key):
         '''
@@ -63,8 +89,26 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        # get postion for the item
+        position = self._hash_mod(key)
 
+        # current item at position
+        current_item = self.storage[position]
+
+        # tranverse the linked list
+        while current_item:
+            # compare the keys
+            if self._hash(key) == self._hash(current_item.key):
+                # get the next item
+                next_item = current_item.next
+                # set the next item to the current position
+                self.storage[position] = next_item
+                return key
+            # move to the next item
+            current_item = current_item.next
+
+        print('Warning: Key Not Found')
+        return None
 
     def retrieve(self, key):
         '''
@@ -74,8 +118,23 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        # get the position in the array
+        position = self._hash_mod(key)
+        hashed_key = self._hash(key)
 
+        # get the node at the current position
+        current_node = self.storage[position]
+
+        # Tranverse the linked list
+        while current_node:
+            # compare the key of the node in the linked list with the hashed key
+            if self._hash(current_node.key) == hashed_key:
+                # return the value of the current node
+                return current_node.value
+            # move on to the next node
+            current_node = current_node.next
+
+        return None
 
     def resize(self):
         '''
@@ -84,8 +143,23 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        # copy the existing storage with out the None value
+        storage_items = [item for item in self.storage if item]
+        # double the existing capacity
+        self.capacity = self.capacity * 2
+        # create new array
+        self.storage = [None] * self.capacity
 
+        # go through all the items in the copied list
+        for item in storage_items:
+            # set the current node to the current item
+            current_node = item
+            # if current node is not None
+            while current_node:
+                # Insert into the New storage
+                self.insert(current_node.key, current_node.value)
+                # move to the next node
+                current_node = current_node.next
 
 
 if __name__ == "__main__":
